@@ -15,7 +15,11 @@ import threading
 from datetime import datetime
 import vlc
 import os
+import sys
 import random
+
+from pathlib import Path
+print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 
 from .clock import Clock
 from .clock import Date
@@ -443,6 +447,6 @@ class RadioPlayerApp(App):
         )
 
 
-# if __name__ == "__main__":
-#     app = RadioPlayerApp()
-#     app.run()
+if __name__ == "__main__":
+    app = RadioPlayerApp()
+    app.run()
