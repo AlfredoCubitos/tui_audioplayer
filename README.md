@@ -9,12 +9,22 @@ However, the app works in principle on all Linux distributions that meet the fol
 * can run a VLC-Player
 * uses ALSA soundsystem (also pipewire with ALSA)
 
+You can run the app also remote with *ssh*.
+
+The app can also be controlled in a browser.  
+To do so go into the `src/tui_audioplayer` directory and run `python3 server.py`
+
 ## Installation
 you can install the app with ```pip install tui_audioplayer```  
 `pipx` will not work :-(
 
 You can also clone the repository  
-go into te *src* folder and run ```python3 -m tui_audioplayer.radioplayer```
+go into te *src* folder and run ```python3 -m tui_audioplayer```
+
+### On Raspi
+If you want to install the package on a Raspi, you will possibly get an error.
+The problem is the `pyalsa` package. This package has to be installed with `sudo apt install python3-pyalsa`
+Then run `pip install tui_audioplayer` again.
 
 ## Playlist
 The Playlist is the [JSON](https://www.xspf.org/jspf) version off XSPF. 
@@ -35,3 +45,5 @@ To open and close the Playlist press the *p* key
 
 ![](res/playlist.png)
 
+## Issues
+* Key events are ignored for changing the volume, so changing the volume works only with mouse scrolling up or down.

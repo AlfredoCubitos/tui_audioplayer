@@ -10,6 +10,7 @@ Sparkline {
     color: #89ce00;
 }
 
+
 #volbar{
 
     margin-left:1;

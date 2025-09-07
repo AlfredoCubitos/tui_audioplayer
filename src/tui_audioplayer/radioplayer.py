@@ -1,12 +1,13 @@
 from textual.app import App, ComposeResult
 from textual.containers import HorizontalGroup, VerticalGroup, Container, Horizontal, Vertical, Center, Middle
-from textual.widgets import Footer, Header, Label, Button, TabbedContent, TabPane, Markdown, Static, Digits, Link, Collapsible,  ListItem, ListView, Sparkline, ProgressBar
-from textual import work
+from textual.widgets import Footer, Header, Label, Button, TabbedContent, TabPane, Markdown, Static, Digits, Link, Collapsible,  ListItem, ListView, Sparkline, ProgressBar, Log
+from textual import work, events
 from textual.worker import Worker, get_current_worker
 from textual.color import Color, Gradient
 from textual.widget import Widget
 from textual.reactive import reactive
 from textual_image.widget import Image
+
 
 from pyalsa import alsamixer
 
@@ -21,9 +22,9 @@ import random
 from pathlib import Path
 print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 
-from .clock import Clock
-from .clock import Date
-from .playlists import PlayList
+from tui_audioplayer.clock import Clock
+from tui_audioplayer.clock import Date
+from tui_audioplayer.playlists import PlayList
 
 CALENDAR = "'Waiting for the textual Calendar Widget :-)'"
 
@@ -292,27 +293,54 @@ class VolumeBar(ProgressBar):
         super().__init__()
         self.progressbar = None
         self.max_volume = 65536 #Alsa max value
+        self.setup_gradients()
     
     def compose(self) -> ComposeResult:
-        stops =  [
-            (0.0,"#aaff00"),(0.2,"#55ff00"),(0.5,"yellow"),( 1.0,"red")]
-            
-        # gradient = Gradient.from_colors(
-        #     "#aaff00",
-        #     "#55ff00",
-        #     "#00aa00",
-        #     "#4f9d00",
-        #     "#fcec0c",
-        #     "#fce327",
-        #     "#fcbf44",
-        #     "#fc633d",
-        #     "#fc3022"
-        # )
-        gradient = Gradient(*stops)
-        self.progressbar = ProgressBar(total=100, gradient=gradient, show_eta=False, id="volbar")
+        
+        self.progressbar = ProgressBar(total=100, gradient=self.gradient1, show_eta=False, id="volbar")
         self.progressbar.border_title = "Volume"
         yield Label("\U0001F50A" ,id="vol_ico")
         yield self.progressbar
+        if DEBUG:
+            yield Label("Debug: ", id="dbg")
+        
+    def setup_gradients(self):
+        self.gradient1 = Gradient.from_colors(
+            "#aaff00",
+            "#55ff00",
+            "#00aa00",
+            "#4f9d00",
+            # "#fcec0c",
+            # "#fce327",
+            # "#fcbf44",
+            # "#fc633d",
+            # "#fc3022"
+        )
+        self.gradient2 = Gradient.from_colors(
+            #"#fcec0c",
+            "#fce327",
+            "#aaff00",
+            "#55ff00",
+            # "#00aa00",
+            "#4f9d00",
+            "#4f9d00",
+            "#4f9d00",
+            
+            # "#fcbf44",
+            # "#fc633d",
+            # "#fc3022"
+        )
+        self.gradient3 = Gradient.from_colors(
+            "#fc3022",
+            "#fc633d",
+            "#fcec0c",
+            "#fce327",
+            "#aaff00",
+            "#55ff00",
+            "#00aa00",
+            "#4f9d00",
+            
+        )
     
     def setup_alsa(self):
         mixer = alsamixer.Mixer()
@@ -325,7 +353,6 @@ class VolumeBar(ProgressBar):
     def update_volume(self):
         volume = (self.alsa.get_volume()/self.max_volume)*100
         self.progressbar.update(progress=volume)
-    
     
     def increase_volume(self):
         #self.progressbar.advance()
@@ -345,10 +372,10 @@ class VolumeBar(ProgressBar):
         
             
         
-    def on_key(self, event):
+    def on_key(self, event: events.Key)-> None:
         if event.key == "down":
             self.decrease_volume()
-        elif event.key == "up":
+        elif event.k == "up":
             self.increase_volume()
 
     def on_click(self, event):
@@ -378,6 +405,7 @@ class RadioPlayerApp(App):
                 ("k", "show_tab('calendar')", "Calendar"),
                 ("p", "show_playlist()","Playlist"),
                 ("e", "collapse_or_expand(False)", "Expand All"),
+                
             
     ]
 

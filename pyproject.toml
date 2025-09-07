@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "TUI-AudioPlayer"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
         "textual",
         "pyalsa",
@@ -19,3 +19,6 @@ keywords = ["textual","cli","WebRadio","command line","console"]
 
 [project.scripts]
 audioplayer = "tui_audioplayer.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/AlfredoCubitos/tui_audioplayer"
