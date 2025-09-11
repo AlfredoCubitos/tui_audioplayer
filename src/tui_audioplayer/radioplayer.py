@@ -353,19 +353,20 @@ class VolumeBar(ProgressBar):
     def update_volume(self):
         volume = (self.alsa.get_volume()/self.max_volume)*100
         self.progressbar.update(progress=volume)
+        
     
     def increase_volume(self):
         #self.progressbar.advance()
         volume = self.alsa.get_volume() + (self.max_volume / 100)
         if volume <= self.max_volume:
             self.query_one("#vol_ico").update("\U0001F50A")
-            self.alsa.set_volume(int(volume))
+            self.alsa.set_volume_tuple([int(volume),int(volume)])
             self.update_volume()
         
     def decrease_volume(self):
         volume = self.alsa.get_volume() - (self.max_volume / 100)
         if volume >= 0:
-            self.alsa.set_volume(int(volume))
+            self.alsa.set_volume_tuple([int(volume),int(volume)])
             self.update_volume()
         if volume <= 0:
             self.query_one("#vol_ico").update("\U0001F507")
